@@ -61,24 +61,32 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Hello World!")
+    .ExcludeFromDescription();
 
-app.MapPost("/login", (UserLogin user, IUserService service) => Login(user, service));
+app.MapPost("/login", (UserLogin user, IUserService service) => Login(user, service))
+    .Accepts<UserLogin>("application/json")
+    .Produces<string>();
 
 app.MapPost("/create",
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
-(Movie movie, IMovieService service) => Create(movie, service));
+(Movie movie, IMovieService service) => Create(movie, service))
+    .Accepts<Movie>("application/json")
+    .Produces<Movie>(statusCode: 200, contentType: "application/json");
 
 app.MapGet("/get",
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Standard, Administrator")]
-(int id, IMovieService service) => Get(id, service));
+(int id, IMovieService service) => Get(id, service))
+    .Produces<Movie>();
 
 app.MapGet("/list",
-    (IMovieService service) => List(service));
+    (IMovieService service) => List(service))
+    .Produces<List<Movie>>(statusCode: 200, contentType: "application/json");
 
 app.MapPut("/update",
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
-(Movie newMovie, IMovieService service) => Update(newMovie, service));
+(Movie newMovie, IMovieService service) => Update(newMovie, service))
+    .Accepts<Movie>("application/json");
 
 app.MapDelete("/delete",
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
