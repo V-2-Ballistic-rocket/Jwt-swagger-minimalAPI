@@ -61,7 +61,8 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseAuthorization();
 
-app.MapGet("/", () => "Hello World!")
+app.MapGet("/", () => "минимальный апи для кинотеатра, реализующий CRUID методы над сущностью Movie," +
+" с аутентификацией на Jwt токенах и с доступом в swagger!")
     .ExcludeFromDescription();
 
 app.MapPost("/login", (UserLogin user, IUserService service) => Login(user, service))
